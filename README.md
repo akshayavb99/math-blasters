@@ -125,7 +125,7 @@ fresh local learner identity, clear that cookie for `localhost` in your
 browser's developer tools, then reload the page.
 
 Clearing the cookie creates a new learner on the next API request. This does
-not delete database rows; it only makes the browser use a new identity.
+not delete database rows. It only makes the browser use a new identity.
 
 ## Layout
 
