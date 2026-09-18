@@ -1,7 +1,7 @@
 import secrets
 from typing import Annotated
 
-from fastapi import Depends, Request, Response, HTTPException
+from fastapi import Depends, HTTPException, Request, Response
 from sqlalchemy import select
 from sqlalchemy.exc import OperationalError
 
