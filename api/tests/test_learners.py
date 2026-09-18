@@ -57,3 +57,14 @@ def test_unknown_token_creates_fresh_learner(client, session):
     assert replacement_token
     assert replacement_token != "not-a-real-token"
     assert replacement_token != first_token
+
+
+def test_malformed_token_creates_fresh_learner_without_lookup(client, session):
+    response = client.get(
+        "/api/health",
+        cookies={LEARNER_COOKIE_NAME: "not a valid learner token"},
+    )
+
+    assert response.status_code == 200
+    assert learner_count(session) == 1
+    assert response.cookies.get(LEARNER_COOKIE_NAME)
