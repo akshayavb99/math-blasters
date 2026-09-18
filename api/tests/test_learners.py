@@ -3,23 +3,25 @@ from sqlalchemy import func, select
 from app.learner import LEARNER_COOKIE_NAME
 from app.models import Learner
 
+
 def learner_count(session):
     return session.scalar(select(func.count()).select_from(Learner))
 
+
 def test_first_request_creates_one_learner(client, session):
-      assert learner_count(session) == 0
+    assert learner_count(session) == 0
 
-      response = client.get("/api/health")
+    response = client.get("/api/health")
 
-      assert response.status_code == 200
-      assert learner_count(session) == 1
+    assert response.status_code == 200
+    assert learner_count(session) == 1
 
-      cookie = response.cookies.get(LEARNER_COOKIE_NAME)
-      assert cookie
+    cookie = response.cookies.get(LEARNER_COOKIE_NAME)
+    assert cookie
 
-      set_cookie = response.headers["set-cookie"]
-      assert "HttpOnly" in set_cookie
-      assert "SameSite=lax" in set_cookie
+    set_cookie = response.headers["set-cookie"]
+    assert "HttpOnly" in set_cookie
+    assert "SameSite=lax" in set_cookie
 
 
 def test_second_request_reuses_learner(client, session):
@@ -34,9 +36,7 @@ def test_second_request_reuses_learner(client, session):
     assert second_response.status_code == 200
     assert learner_count(session) == 1
 
-    learner = session.scalar(
-        select(Learner).where(Learner.token == first_token)
-    )
+    learner = session.scalar(select(Learner).where(Learner.token == first_token))
     assert learner is not None
 
 
