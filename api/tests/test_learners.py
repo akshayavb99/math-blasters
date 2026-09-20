@@ -13,7 +13,12 @@ def learner_count(session):
 
 
 @pytest.fixture
-def learner_client(client):
+def learner_client(client, monkeypatch):
+    monkeypatch.setattr(
+        "app.learner.get_settings",
+        lambda: SimpleNamespace(cookie_secure=False),
+    )
+
     router = APIRouter()
 
     @router.get("/api/test-learner")
