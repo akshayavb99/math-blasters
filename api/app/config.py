@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     # Log-level
     log_level: str = "INFO"
 
-    # Local development uses HTTP; production should set COOKIE_SECURE=true.
-    cookie_secure: bool = False
+    # Production-safe default; local HTTP development must explicitly opt out.
+    cookie_secure: bool = True
 
     @property
     def cors_origin_list(self) -> list[str]:

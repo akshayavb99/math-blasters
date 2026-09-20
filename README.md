@@ -127,6 +127,12 @@ browser's developer tools, then reload the page.
 Clearing the cookie creates a new learner on the next API request. This does
 not delete database rows. It only makes the browser use a new identity.
 
+### Learner cookies over HTTP
+
+Learner cookies are Secure by default. Local development uses HTTP, so set
+`COOKIE_SECURE=false` in `.env`; production deployments should leave it unset
+or set it to `true`.
+
 ## Layout
 
 ```

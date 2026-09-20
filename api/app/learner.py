@@ -15,6 +15,7 @@ LEARNER_COOKIE_NAME = "learner_token"
 LEARNER_TOKEN_BYTES = 32
 LEARNER_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{43}$")
 LEARNER_CREATION_ATTEMPTS = 3
+LEARNER_TOKEN_INDEX = "ix_learners_token"
 
 
 def _database_unavailable(exc: SQLAlchemyError) -> HTTPException:
@@ -28,6 +29,13 @@ def _rollback(session: SessionDep) -> None:
     rollback = getattr(session, "rollback", None)
     if rollback is not None:
         rollback()
+
+
+def _is_token_collision(exc: IntegrityError) -> bool:
+    original = getattr(exc, "orig", None)
+    diagnostic = getattr(original, "diag", None)
+    constraint_name = getattr(diagnostic, "constraint_name", None)
+    return constraint_name == LEARNER_TOKEN_INDEX
 
 
 def get_current_learner(request: Request, response: Response, session: SessionDep) -> Learner:
@@ -47,9 +55,11 @@ def get_current_learner(request: Request, response: Response, session: SessionDe
             session.add(learner)
             session.commit()
             session.refresh(learner)
-        except IntegrityError:
+        except IntegrityError as exc:
             _rollback(session)
-            continue
+            if _is_token_collision(exc):
+                continue
+            raise _database_unavailable(exc) from exc
         except SQLAlchemyError as exc:
             _rollback(session)
             raise _database_unavailable(exc) from exc
