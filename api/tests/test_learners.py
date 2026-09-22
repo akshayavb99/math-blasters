@@ -80,10 +80,11 @@ def test_unknown_token_creates_fresh_learner(learner_client, session):
     assert replacement_token != first_token
 
 
-def test_malformed_token_creates_fresh_learner_without_lookup(learner_client, session):
+def test_malformed_token_creates_fresh_learner(learner_client, session):
+    # A NUL byte fails in the driver, so this passes only while the pattern guards it.
     response = learner_client.get(
         "/api/test-learner",
-        cookies={LEARNER_COOKIE_NAME: "not a valid learner token"},
+        headers={"Cookie": f'{LEARNER_COOKIE_NAME}="\000abc"'},
     )
 
     assert response.status_code == 200

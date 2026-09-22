@@ -105,6 +105,7 @@ cd api
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 export DATABASE_URL="postgresql+psycopg://<user>:<password>@localhost:5432/mathblasters"
+export COOKIE_SECURE=false   # local HTTP; see below
 alembic upgrade head
 uvicorn app.main:app --reload
 
@@ -129,9 +130,23 @@ not delete database rows. It only makes the browser use a new identity.
 
 ### Learner cookies over HTTP
 
-Learner cookies are Secure by default. Local development uses HTTP, so set
-`COOKIE_SECURE=false` in `.env`; production deployments should leave it unset
-or set it to `true`.
+Learner cookies are `Secure` by default, so a browser will only store them over
+HTTPS. Local development serves HTTP, which means `COOKIE_SECURE=false` has to
+reach the API process or the identity cookie is silently dropped and every
+request mints a new learner.
+
+How to set it depends on how you started the API:
+
+- **Docker Compose**: already handled. Compose reads `COOKIE_SECURE` from the
+  repository-root `.env` (it ships as `false` in `.env.example`) and passes it
+  into the container.
+- **Running without Docker**: `export COOKIE_SECURE=false` in the shell you run
+  `uvicorn` from, as the commands above do. The root `.env` is **not** picked up
+  here: settings resolve `.env` relative to the working directory, and that
+  directory is `api/`.
+
+Production deployments serve HTTPS and should leave the variable unset, or set
+it to `true`.
 
 ## Layout
 

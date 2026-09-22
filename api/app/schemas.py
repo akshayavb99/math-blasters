@@ -16,12 +16,3 @@ class ErrorDetail(BaseModel):
 
 class ErrorEnvelope(BaseModel):
     error: ErrorDetail
-
-
-DATABASE_UNAVAILABLE_ERROR = ErrorEnvelope(
-    error=ErrorDetail(
-        code="internal",
-        message="Database Unavailable",
-        details=None,
-    )
-)
