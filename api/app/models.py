@@ -40,11 +40,11 @@ class Account(Base):
     avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     created_at: mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
-    identities: Mapped[list["OauthIdentity"]] = relationship(back_populates="account")
+    identities: Mapped[list["OAuthIdentity"]] = relationship(back_populates="account")
     learners: Mapped[list["Learner"]] = relationship(back_populates="account")
 
 
-class OauthIdentity(Base):
+class OAuthIdentity(Base):
     __tablename__ = "oauth_identities"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid64)
