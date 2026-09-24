@@ -4,12 +4,12 @@ Content lives in the repository and does not enter the database. Future models
 for learner progress, accounts, or state will inherit from Base here.
 """
 
+import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, func, Boolean, ForeignKey, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, UniqueConstraint, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-import uuid
 
 class Base(DeclarativeBase):
     pass
@@ -24,8 +24,11 @@ class Learner(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    account_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("accounts.id", ondelete="CASCADE"), nullable=True)
+    account_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), nullable=True
+    )
     account: Mapped["Account | None"] = relationship(back_populates="learners")
+
 
 class Account(Base):
     __tablename__ = "accounts"
@@ -37,18 +40,23 @@ class Account(Base):
     avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     created_at: mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
-    identities: Mapped[list["OAuthIdentity"]] = relationship(back_populates="account")
+    identities: Mapped[list["OauthIdentity"]] = relationship(back_populates="account")
     learners: Mapped[list["Learner"]] = relationship(back_populates="account")
+
 
 class OauthIdentity(Base):
     __tablename__ = "oauth_identities"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid64)
-    account_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False)
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False
+    )
     provider: Mapped[str] = mapped_column(String(50), nullable=False)
     provider_account_id: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     account: Mapped["Account"] = relationship(back_populates="identities")
 
-    __table_args__ = (UniqueConstraint("provider", "provider_account_id", name="unique_provider_provider_account_id"))
+    __table_args__ = UniqueConstraint(
+        "provider", "provider_account_id", name="unique_provider_provider_account_id"
+    )
