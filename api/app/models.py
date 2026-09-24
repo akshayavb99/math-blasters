@@ -33,12 +33,12 @@ class Learner(Base):
 class Account(Base):
     __tablename__ = "accounts"
 
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid64)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), nullable=False)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     display_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)
-    created_at: mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     identities: Mapped[list["OAuthIdentity"]] = relationship(back_populates="account")
     learners: Mapped[list["Learner"]] = relationship(back_populates="account")
@@ -47,7 +47,7 @@ class Account(Base):
 class OAuthIdentity(Base):
     __tablename__ = "oauth_identities"
 
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid64)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     account_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False
     )
