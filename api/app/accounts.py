@@ -1,20 +1,20 @@
+from api.app.models import Account, OAuthIdentity
 from sqlachemy import select
 from sqlalchemy.orm import Session
 
-from api.app.models import Account, OauthIdentity
 
 def resolve_account(
-        session: Session,
-        provider: str,
-        provider_account_id: str,
-        email: str
-        email_verified: bool,
-        display_name: str | None = None,
-        avatar_url: str | None = None,
+    session: Session,
+    provider: str,
+    provider_account_id: str,
+    email: str,
+    email_verified: bool,
+    display_name: str | None = None,
+    avatar_url: str | None = None,
 ) -> Account:
     """
     Resolves or creates an Account based on OAuth credentials.
-    
+
     Precedence rules:
     1. Existing (provider, provider_account_id) pair -> Return associated account.
     2. Verified email matches an existing account -> Attach new OAuthIdentity and return account.
@@ -33,9 +33,7 @@ def resolve_account(
 
     # Rule 2 - Match on verified email to an existing account
     if email_verified:
-        existing_account = session.scalar(
-            select(Account).where(Account.email == email)
-        )
+        existing_account = session.scalar(select(Account).where(Account.email == email))
         if existing_account:
             # Create and attach new identity to existing account
             new_identity = OAuthIdentity(

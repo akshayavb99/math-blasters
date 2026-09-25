@@ -57,6 +57,8 @@ class OAuthIdentity(Base):
 
     account: Mapped["Account"] = relationship(back_populates="identities")
 
-    __table_args__ = UniqueConstraint(
-        "provider", "provider_account_id", name="unique_provider_provider_account_id"
+    __table_args__ = (
+        UniqueConstraint(
+            "provider", "provider_account_id", name="unique_provider_provider_account_id"
+        ),
     )
