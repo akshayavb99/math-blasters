@@ -21,7 +21,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import get_settings
-from app.routers import health, auth
+from app.routers import auth, health
 from app.schemas import ErrorDetail, ErrorEnvelope
 
 

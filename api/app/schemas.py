@@ -17,6 +17,7 @@ class ErrorDetail(BaseModel):
 class ErrorEnvelope(BaseModel):
     error: ErrorDetail
 
+
 class AccountMeGetResponse(BaseModel):
     display_name: str | None
     avatar_url: str | None
