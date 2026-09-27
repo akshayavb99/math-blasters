@@ -1,6 +1,7 @@
-from api.app.models import Account, OAuthIdentity
-from sqlachemy import select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from app.models import Account, OAuthIdentity
 
 
 def resolve_account(
