@@ -15,13 +15,7 @@ LEARNER_TOKEN_BYTES = 32
 LEARNER_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{43}$")
 
 
-def get_current_learner(request: Request, response: Response, session: SessionDep) -> Learner:
-    token = request.cookies.get(LEARNER_COOKIE_NAME)
-
-    if token and LEARNER_TOKEN_PATTERN.fullmatch(token):
-        learner = session.scalar(select(Learner).where(Learner.token == token))
-        if learner is not None:
-            return learner
+def issue_learner_identity(session: SessionDep, response: Response) -> Learner:
 
     learner = Learner(token=secrets.token_urlsafe(LEARNER_TOKEN_BYTES))
     session.add(learner)
@@ -37,6 +31,17 @@ def get_current_learner(request: Request, response: Response, session: SessionDe
         path="/",
     )
     return learner
+
+
+def get_current_learner(request: Request, response: Response, session: SessionDep) -> Learner:
+    token = request.cookies.get(LEARNER_COOKIE_NAME)
+
+    if token and LEARNER_TOKEN_PATTERN.fullmatch(token):
+        learner = session.scalar(select(Learner).where(Learner.token == token))
+        if learner is not None:
+            return learner
+
+    return issue_learner_identity(session, response)
 
 
 LearnerDep = Annotated[Learner, Depends(get_current_learner)]

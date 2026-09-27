@@ -1,10 +1,10 @@
 """FastAPI Route for GET current account details"""
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response, status
 from sqlalchemy import select
 
 from app.db import SessionDep
-from app.learner import LEARNER_COOKIE_NAME, LEARNER_TOKEN_PATTERN
+from app.learner import LEARNER_COOKIE_NAME, LEARNER_TOKEN_PATTERN, issue_learner_identity
 from app.models import Account, Learner, OAuthIdentity
 from app.schemas import AccountMeGetResponse
 
@@ -36,3 +36,15 @@ def get_me(request: Request, session: SessionDep) -> AccountMeGetResponse | None
         email=account.email,
         providers=sorted(set(providers)),
     )
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+def logout(request: Request, response: Response, session: SessionDep) -> None:
+    token = request.cookies.get(LEARNER_COOKIE_NAME)
+
+    if token and LEARNER_TOKEN_PATTERN.fullmatch(token):
+        learner = session.scalar(select(Learner).where(Learner.token == token))
+        if learner:
+            session.delete(learner)
+
+    issue_learner_identity(session, response)
