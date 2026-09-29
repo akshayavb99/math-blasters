@@ -1,7 +1,7 @@
 """SQLAlchemy models.
 
 Content lives in the repository and does not enter the database. Future models
-for learner progress, accounts, or state will inherit from Base here.
+for learner progress or state will inherit from Base here.
 """
 
 import uuid
@@ -40,7 +40,7 @@ class Account(Base):
     __tablename__ = "accounts"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    email: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    email: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     display_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     avatar_url: Mapped[str | None] = mapped_column(String(1024), nullable=True)

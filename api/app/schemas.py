@@ -21,5 +21,5 @@ class ErrorEnvelope(BaseModel):
 class AccountMeGetResponse(BaseModel):
     display_name: str | None
     avatar_url: str | None
-    email: str
+    email: str | None
     providers: list[str]

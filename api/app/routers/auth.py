@@ -1,4 +1,4 @@
-"""FastAPI Route for GET current account details"""
+"""Auth routes: current account and logout."""
 
 from fastapi import APIRouter, Request, Response, status
 from sqlalchemy import select
@@ -25,7 +25,7 @@ def get_me(account: OptionalCurrentAccountDep, session: SessionDep) -> AccountMe
         display_name=account.display_name,
         avatar_url=account.avatar_url,
         email=account.email,
-        providers=sorted(set(providers)),
+        providers=sorted(providers),
     )
 
 

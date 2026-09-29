@@ -58,10 +58,8 @@ def test_optional_dependency_returns_none_without_cookie(
 def test_optional_dependency_returns_none_for_invalid_or_unknown_cookie(
     account_dependency_client, session, token
 ):
-    response = account_dependency_client.get(
-        "/api/test/current-account/optional",
-        cookies={LEARNER_COOKIE_NAME: token},
-    )
+    account_dependency_client.cookies.set(LEARNER_COOKIE_NAME, token)
+    response = account_dependency_client.get("/api/test/current-account/optional")
 
     assert response.status_code == 200
     assert response.json() is None

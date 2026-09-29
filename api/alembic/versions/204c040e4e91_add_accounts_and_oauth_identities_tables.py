@@ -22,7 +22,7 @@ def upgrade() -> None:
     op.create_table(
         "accounts",
         sa.Column("id", sa.Uuid(), nullable=False),
-        sa.Column("email", sa.String(length=255), nullable=False),
+        sa.Column("email", sa.String(length=255), nullable=True),
         sa.Column("email_verified", sa.Boolean(), nullable=False, server_default=sa.text("false")),
         sa.Column("display_name", sa.String(length=255), nullable=True),
         sa.Column("avatar_url", sa.String(length=1024), nullable=True),

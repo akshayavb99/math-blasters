@@ -8,7 +8,7 @@ def resolve_account(
     session: Session,
     provider: str,
     provider_account_id: str,
-    email: str,
+    email: str | None,
     email_verified: bool,
     display_name: str | None = None,
     avatar_url: str | None = None,
@@ -33,8 +33,10 @@ def resolve_account(
         return existing_identity.account
 
     # Rule 2 - Match on verified email to an existing account
-    if email_verified:
-        existing_account = session.scalar(select(Account).where(Account.email == email))
+    if email_verified and email:
+        existing_account = session.scalar(
+            select(Account).where(Account.email == email, Account.email_verified.is_(True))
+        )
         if existing_account:
             # Create and attach new identity to existing account
             new_identity = OAuthIdentity(
@@ -46,7 +48,7 @@ def resolve_account(
             session.flush()
             return existing_account
 
-    # Ryle 3 - Create new Account and new OAuthIdentity
+    # Rule 3 - Create new Account and new OAuthIdentity
     new_account = Account(
         email=email,
         email_verified=email_verified,
