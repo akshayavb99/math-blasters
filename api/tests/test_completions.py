@@ -106,7 +106,7 @@ def test_signed_out_request_returns_401_without_writing_rows(client, session):
     assert response.json() == {
         "error": {
             "code": "unauthorized",
-            "message": "Please sign in to continue.",
+            "message": "Not authenticated",
             "details": None,
         }
     }
