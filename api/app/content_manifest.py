@@ -11,7 +11,5 @@ def lesson_slug_exists(slug: str) -> bool:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     return any(
-        lesson["slug"] == slug
-        for module in manifest["modules"]
-        for lesson in module["lessons"]
+        lesson["slug"] == slug for module in manifest["modules"] for lesson in module["lessons"]
     )
