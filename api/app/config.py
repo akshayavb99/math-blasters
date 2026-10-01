@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     # Default rate limit for POST /api/completions
     completions_rate_limit: str = "20/minute"
 
+    # Generated content manifest used to validate completion lesson slugs.
+    content_manifest_path: str = "../content/manifest.json"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
