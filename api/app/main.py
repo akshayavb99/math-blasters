@@ -23,7 +23,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import get_settings
-from app.routers import auth, completions, health
+from app.routers import auth, completions, health, progress
 from app.schemas import ErrorDetail, ErrorEnvelope
 
 
@@ -165,6 +165,9 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api")
 
     app.include_router(completions.router, prefix="/api")
+
+    # Register the progress router
+    app.include_router(progress.router, prefix="/api")
 
     return app
 
