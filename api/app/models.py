@@ -50,7 +50,6 @@ class Account(Base):
 
     identities: Mapped[list["OAuthIdentity"]] = relationship(back_populates="account")
     learners: Mapped[list["Learner"]] = relationship(back_populates="account")
-    completions: Mapped[list["Completion"]] = relationship(back_populates="account")
 
 
 class OAuthIdentity(Base):
@@ -83,5 +82,3 @@ class Completion(Base):
     completed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-
-    account: Mapped["Account"] = relationship(back_populates="completions")
