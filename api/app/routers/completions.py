@@ -38,8 +38,11 @@ def create_completion(
 
     if completed_at is None:
         existing = session.get(Completion, (account.id, payload.lesson_slug))
-        completed_at = existing.completed_at
-        response.status_code = status.HTTP_200_OK
+        if existing is None:
+            completed_at = session.execute(statement).scalar_one()
+        else:
+            completed_at = existing.completed_at
+            response.status_code = status.HTTP_200_OK
 
     session.commit()
     return CompletionResponse(
