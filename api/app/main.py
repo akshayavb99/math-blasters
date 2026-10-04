@@ -189,6 +189,10 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
         expose_headers=["X-Request-ID"],
     )
+
+    # Store the lessons slugs as part of app.state
+    app.state.lesson_slugs = load_lesson_slugs(settings.content_manifest_path)
+
     # Add last so this middleware is outermost and logs CORS preflight responses.
     app.add_middleware(RequestLoggingMiddleware)
 

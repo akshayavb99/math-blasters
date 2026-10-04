@@ -4,6 +4,8 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from pathlib import Path
+
 MIN_AUTH_SECRET_KEY_LENGTH = 32
 INSECURE_DEV_AUTH_SECRET = "insecure-dev-secret-key-change-in-production"
 
@@ -48,7 +50,9 @@ class Settings(BaseSettings):
     google_client_secret: str | None = None
 
     # Generated content manifest used to validate completion lesson slugs.
-    content_manifest_path: str = "../content/manifest.json"
+    content_manifest_path: str = str(
+        Path(__file__).resolve().parents[2] / "content" / "manifest.json"
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

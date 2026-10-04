@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Response, status
+from fastapi import APIRouter, HTTPException, Request, Response, status
 from sqlalchemy.dialects.postgresql import insert
 
 from app.auth import CurrentAccountDep
-from app.content_manifest import lesson_slug_exists
+
 from app.db import SessionDep
 from app.models import Completion
 from app.schemas import CompletionPostRequest, CompletionResponse
@@ -17,12 +17,13 @@ router = APIRouter(prefix="/completions", tags=["completions"])
 )
 def create_completion(
     payload: CompletionPostRequest,
+    request: Request,
     response: Response,
     account: CurrentAccountDep,
     session: SessionDep,
 ) -> CompletionResponse:
     # The manifest check must pass before the completion table is written.
-    if not lesson_slug_exists(payload.lesson_slug):
+    if payload.lesson_slug not in request.app.state.lesson_slugs:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Lesson not found",
