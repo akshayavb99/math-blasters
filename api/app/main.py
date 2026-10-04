@@ -23,13 +23,11 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import Settings, get_settings
+from app.content_manifest import load_lesson_slugs
 from app.learner import learner_rate_key
 from app.providers import get_provider, register
 from app.providers.github import GithubProvider
 from app.providers.google import GoogleProvider
-from app.routers import auth, health
-from app.config import get_settings
-from app.content_manifest import load_lesson_slugs
 from app.routers import auth, completions, health, progress
 from app.schemas import ErrorDetail, ErrorEnvelope
 
