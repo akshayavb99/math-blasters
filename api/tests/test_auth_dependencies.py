@@ -101,7 +101,7 @@ def test_required_dependency_returns_unauthorized_envelope(
     assert response.json() == {
         "error": {
             "code": "unauthorized",
-            "message": "Not authenticated",
+            "message": "Sign in to continue",
             "details": None,
         }
     }
