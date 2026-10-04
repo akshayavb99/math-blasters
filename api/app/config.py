@@ -1,10 +1,9 @@
 """Application settings, read from the environment (or a local .env file)."""
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from pathlib import Path
 
 MIN_AUTH_SECRET_KEY_LENGTH = 32
 INSECURE_DEV_AUTH_SECRET = "insecure-dev-secret-key-change-in-production"

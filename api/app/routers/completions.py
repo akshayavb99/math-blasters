@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Request, Response, status
 from sqlalchemy.dialects.postgresql import insert
 
 from app.auth import CurrentAccountDep
-
 from app.db import SessionDep
 from app.models import Completion
 from app.schemas import CompletionPostRequest, CompletionResponse
