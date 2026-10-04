@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Request, Response, status
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
 from app.auth import CurrentAccountDep
@@ -37,12 +38,14 @@ def create_completion(
     completed_at = session.execute(statement).scalar_one_or_none()
 
     if completed_at is None:
-        existing = session.get(Completion, (account.id, payload.lesson_slug))
-        if existing is None:
-            completed_at = session.execute(statement).scalar_one()
-        else:
-            completed_at = existing.completed_at
-            response.status_code = status.HTTP_200_OK
+        existing = session.execute(
+            select(Completion).where(
+                Completion.account_id == account.id,
+                Completion.lesson_slug == payload.lesson_slug,
+            )
+        ).scalar_one()
+        completed_at = existing.completed_at
+        response.status_code = status.HTTP_200_OK
 
     session.commit()
     return CompletionResponse(
